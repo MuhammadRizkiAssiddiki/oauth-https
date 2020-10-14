@@ -1,19 +1,30 @@
 // Import the express lirbary
 const express = require('express')
+const http = require('http')
+const https = require('https')
+const fs = require('fs')
 
 // Import the axios library, to make HTTP requests
 const axios = require('axios')
 
 // This is the client ID and client secret that you obtained
 // while registering the application
-const clientID = '3dc9a34f8c18ec152bd9'
-const clientSecret = 'b79e96e3a6d76fff8cee9b91afdc6b27d3e86449'
+const clientID = '088c50d6a811fb8beec5'
+const clientSecret = 'ba3f3bc058c202d74f3505abfea627af24f7e0ca'
 
 // Create a new express application and use
 // the express static middleware, to serve all files
 // inside the public directory
 const app = express()
 app.use(express.static(__dirname + '/public'))
+var key = fs.readFileSync('./selfsigned.key');
+var cert = fs.readFileSync('./selfsigned.crt');
+var options = {key:key, cert:cert};
+var serve = http.createServer(app);
+var server = https.createServer(options, app);
+server.listen(9000, () =>{
+  console.log("server running on port 9000")
+});
 
 app.get('/oauth/redirect', (req, res) => {
   // The req.query object has the query params that
@@ -39,4 +50,4 @@ app.get('/oauth/redirect', (req, res) => {
 })
 
 // Start the server on port 8080
-app.listen(8090)
+app.listen(9000)
